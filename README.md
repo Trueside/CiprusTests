@@ -1,19 +1,19 @@
 # CiprusTests
 Homework for Cyprus 
 
-## Установить Java ver.8+
+## Install Java ver.8+
 
-## Выполнить в консоли 
+## Run command 
 ## composer install
 
-## Выполнить в консоли 
+## To up selenium hub run command 
 ## java -jar selenium-server.jar -role hub -hubConfig HubConfig.json
 
-## Выполнить в консоли 
+## To up selenium node run command 
 ## java -jar -Dwebdriver.chrome.driver="chromedriver.exe" -Dwebdriver.gecko.driver="geckodriver.exe" selenium-server.jar -role node -nodeConfig NodeConfig.json
 
-## Для запуска теста 1 выполнить в консоли
+## To start test1 run command
 ## $ vendor\bin\codecept.bat run acceptance CheckTrailerCest
 
-## Для запуска теста 2 выполнить в консоли
+## To start test2 run command
 ## $ vendor\bin\codecept.bat run phpbrowser CheckSitesChangesCest
