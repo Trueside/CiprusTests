@@ -1,0 +1,20 @@
+actor: PhpTester
+modules:
+    enabled:
+        - Asserts
+        - PhpBrowser:
+            url: 'http://localhost'
+            curl:
+                CURLOPT_RETURNTRANSFER: true
+            cookies:
+                cookie-1:
+                    Name: PhpTester
+                    Value: john.doe
+                cookie-2:
+                    Name: authToken
+                    Value: 1abcd2345
+                    Domain: subdomain.domain.com
+                    Path: /admin/
+                    Expires: 1292177455
+                    Secure: true
+                    HttpOnly: false
