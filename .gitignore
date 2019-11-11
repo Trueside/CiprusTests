@@ -1,3 +1,2 @@
-./tests/_output
-./vendor
-*.xml
+/vendor/
+/tests/_output/
