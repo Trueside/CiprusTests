@@ -1,16 +1,25 @@
 <?php
+/**
+ * @group ceo
+ * @group phpbrowser
+ */
 
 class CheckSitesChangesCest
 {
-    public
-    function _before(PhpTester $I)
+    public function _before(PhpTester $I)
     {
-        $I->wantTo("check CEO's changes on sites");
+    }
+
+    public function _after(PhpTester $I)
+    {
+        $I->printResult();
     }
 
     // tests
     public function tryToTest(PhpTester $I, \Page\Phpbrowser\CEO $ceoPage)
     {
+        $I->wantTo("check CEO's changes on sites");
+
         if (($handle = fopen($ceoPage::$pathToCsvFile, "r")) !== FALSE) {
             $url = null;
             $title = null;
@@ -35,39 +44,43 @@ class CheckSitesChangesCest
                             $numCell++;
                             break;
                         default:
-                            echo "Never run \n";
-                            $numCell++;
-                            break;
+                            $I->fail("UNEXPECTED ERROR: This code never run \n");
                     }
                 }
 
                 if ($table[$url] == "URL")
                     continue;
 
-                $problems = 0;
-                $I->setCookie($ceoPage::$cookieName, $ceoPage::$cookieValue);
+                try {
+                    $I->amOnUrl($table[$url]);
+                    $I->seeResponseCodeIsSuccessful();
+                } catch (\Throwable $ex) {
+                    $I->saveResult($table[$url], $ex->getMessage());
+                    continue;
+                }
 
-                $I->amOnUrl($table[$url]);
+                $I->setCookie($ceoPage::$cookieName, $ceoPage::$cookieValue);
 
                 try {
                     $I->seeElement($ceoPage::$selectorTitle . $table[$title] . "')]");
                 } catch (\Throwable $ex) {
-                    $error = "The new title was not found";
-                    $I->setError($table[$url], $error);
-                    $problems++;
+                    $I->saveResult($table[$url], "The new title was not found " . "[$table[$title]].");
                 }
 
-                if ($fes = $I->grabAttributeFrom($ceoPage::$selectorDescription, $ceoPage::$descriptionAtribute) != $table[$description]) {
-                    $error = "The new description was not found";
-                    $I->setError($table[$url], $error);
-                    $problems++;
+                try {
+                    $realDescription = $I->grabAttributeFrom($ceoPage::$selectorDescription, $ceoPage::$descriptionAtribute);
+                } catch (\Throwable $ex) {
+                    $I->saveResult($table[$url], $ex->getMessage());
+                    continue;
                 }
 
-                if ($problems == 0)
-                    echo $table[$url] . " don't have problems with CEO! \r\n";
+                if ($realDescription != $table[$description]) {
+                    $I->saveResult($table[$url], "The new description was not found " . "[$table[$description]].");
+                    continue;
+                }
+                $I->saveResult($table[$url], 'OK');
             }
             fclose($handle);
-            $I->printError();
         }
     }
 }

@@ -2,6 +2,11 @@ actor: PhpTester
 modules:
     enabled:
         - Asserts
+        - \Helper\Acceptance
+        - REST:
+              depends: PhpBrowser
+              url: http://localhost/api/
+              shortDebugResponse: 300
         - PhpBrowser:
             url: 'http://localhost'
             curl:

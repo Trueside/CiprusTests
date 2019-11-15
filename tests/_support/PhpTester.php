@@ -15,37 +15,71 @@
  * @method void pause()
  *
  * @SuppressWarnings(PHPMD)
-*/
+ */
 class PhpTester extends \Codeception\Actor
 {
     use _generated\PhpTesterActions;
 
-   /**
-    * Define custom actions here
-    */
+    /**
+     * Define custom actions here
+     */
 
-    private static $listOfErrors;
+    private static $listWithProblems = [];
+    private static $listWithoutProblems = [];
 
-    public function setError($url, $error)
+    public function saveResult($url, $error)
     {
-        self::$listOfErrors[$url][] = $error;
+        if ($error == 'OK')
+            self::$listWithoutProblems["No problems with: \n\r"][] = $url;
+        else
+            self::$listWithProblems[$url][] = $error;
     }
 
-    public function printError()
+    public function printResult()
     {
         $I = $this;
-        $urlWithPrblems = self::$listOfErrors;
 
-        if (empty($urlWithPrblems)) {
-            echo "\n\r" . date("d.m H:i:s") . " - Every changes were found." . "\r\n";
+        $urlWithProblems = self::$listWithProblems;
+        $urlWithoutProblems = self::$listWithoutProblems;
+
+        $text = "";
+
+        if (empty($urlWithProblems) && empty($urlWithoutProblems)) {
+            $I->fail("UNEXPECTED ERROR: Something wrong with results. \n\r");
+        } elseif (empty($urlWithProblems) && !empty($urlWithoutProblems)) {
+            echo $output = "All changes were found." . "\r\n";
+            $text = $text . $output;
+        } elseif (!empty($urlWithProblems) && empty($urlWithoutProblems)) {
+            echo $output = "No one change were found." . "\r\n";
+            $text = $text . $output;
         } else {
-            echo "Some URLs (" . count($urlWithPrblems) . ") have problems:" . "\r\n";
-            foreach ($urlWithPrblems as $key => $value) {
+            foreach ($urlWithoutProblems as $key => $value) {
+                echo $output = "$key";
+                $text = $text . $output;
                 foreach ($value as $error) {
-                    echo " $key - $error \n\r";
+                    echo $output = "  - $error \n\r";
+                    $text = $text . $output;
                 }
             }
-            $I->assertEquals(count($urlWithPrblems), 0, "Some URLs have problems with CEO");
+            echo $output = "\n\rSome URLs (" . count($urlWithProblems) . ") have problems: " . "\r\n";
+            $text = $text . $output;
         }
+
+        foreach ($urlWithProblems as $key => $value) {
+            echo $output = "$key :" . "\n\r";
+            $text = $text . $output;
+            foreach ($value as $error) {
+                echo $output = "  - $error \n\r";
+                $text = $text . $output;
+            }
+        }
+        $this->createFileReport('tests/_output/CeoReport.txt', $text);
+        $I->assertEmpty(count($urlWithProblems), "Some URLs have problems with CEO");
+    }
+
+    private function createFileReport($name, $text)
+    {
+            file_put_contents($name, $text);
+            echo "New report was created in $name\n\r";
     }
 }

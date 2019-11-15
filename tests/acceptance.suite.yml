@@ -7,15 +7,19 @@
 actor: AcceptanceTester
 modules:
     enabled:
+        - \Helper\Acceptance
         - WebDriver:
+            port: 9515
+            browser: chrome
             url: 'https://yandex.ru'
-            browser: 'chrome'
             clear_cookies: true
             host: localhost
-            port: 4444
             window_size: maximize
             restart: true
             debug_log_entries: 150
             wait: 5
             pageload_timeout: 15
+        - REST:
+              url: http://localhost/api/v1
+              depends: PhpBrowser
     step_decorators: ~

@@ -1,4 +1,5 @@
 <?php
+
 namespace Page\Acceptance;
 
 class YandexVideo
@@ -6,9 +7,10 @@ class YandexVideo
     // include url of current page
     public static $URL = '/video';
     public static $inputSearchVideo = 'span.input__clear ~ input';
-    public static $nameOfVideo = 'ураган';
     public static $buttonSearch = 'button[type="submit"]';
     public static $secondVideoBlock = 'div.serp-item:nth-child(2)';
+    public static $hovered = 'div.thumb-image_hovered';
+    public static $preview = 'div.thumb-preview__target_playing';
     public static $trailer = 'video.thumb-preview__video';
 
     /**
@@ -24,7 +26,7 @@ class YandexVideo
      */
     public static function route($param)
     {
-        return static::$URL.$param;
+        return static::$URL . $param;
     }
 
     /**
