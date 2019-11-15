@@ -10,10 +10,23 @@ Homework for Cyprus
 ## To up ChromeDriver run command
 ## chromedriver --url-base=/wd/hub
 
-## To start test1 run command
+## To start test1 run command 
+
+##(linux)
+## $ vendor/bin/codecept.bat run phpbrowser CheckSitesChangesCest
+
+##(Windows)
 ## $ vendor\bin\codecept.bat run phpbrowser CheckSitesChangesCest
 
-## To start test2 run command
+## To start test2 run command 
+
+##(linux)
+## $ vendor/bin/codecept.bat run acceptance CheckTrailerCest
+
+##(Windows)
+## $ vendor\bin\codecept.bat run phpbrowser CheckSitesChangesCest
+
+## To start test2 run command (Windows)
 ## $ vendor\bin\codecept.bat run acceptance CheckTrailerCest
 
 ## To up selenium hub run command 
